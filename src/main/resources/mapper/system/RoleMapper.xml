@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lssg.dao.sys.RoleMapper">
+    <resultMap id="roleMap" type="com.lssg.model.sys.Role">
+        <result column="id" jdbcType="INTEGER" property="id"/>
+        <result column="rolename" jdbcType="VARCHAR" property="rolename"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="createtime" jdbcType="TIMESTAMP" property="createtime"/>
+        <result column="updatetime" jdbcType="TIMESTAMP" property="updatetime"/>
+    </resultMap>
+
+    <!--获取总条数-->
+    <select id="roleTotal" resultType="java.lang.Integer">
+        SELECT count(*)
+        from t_role
+    </select>
+
+    <select id="getRoleAll" resultType="com.lssg.model.sys.Role">
+        select * from t_role r
+        <if test="rolename != null and rolename != ''">
+            AND r.rolename = #{rolename}
+        </if>
+        <if test="createTime != null and createTime != ''">
+            AND r.createtime = #{createtime}
+        </if>
+        order by r.id
+    </select>
+
+    <select id="findUserRole" resultMap="roleMap">
+        select r.*
+        from t_role r
+            left join t_user_role ur on (r.id = ur.roleid)
+            left join t_user u on (u.id = ur.userid)
+        where u.username = #{userName}
+    </select>
+
+    <select id="findById" resultType="roleWithMenu">
+        select
+            r.id   id,
+            r.rolename rolename,
+            r.remark,
+            rm.menuid  menuid
+        from t_role r
+            left join t_role_menu rm on (r.id = rm.roleid)
+        where r.id = #{roleId}
+    </select>
+
+    <insert id="insertRole" parameterType="com.lssg.model.sys.Role">
+
+        <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into t_role (rolename, remark,createuser,createtime)
+        values
+        (#{rolename,jdbcType=VARCHAR},
+        #{remark,jdbcType=VARCHAR},
+        #{createuser,jdbcType=VARCHAR},
+        #{createtime,jdbcType=TIMESTAMP})
+    </insert>
+
+    <delete id="batchDeleteRole" parameterType="java.lang.Integer">
+        DELETE FROM  t_role  WHERE id IN
+        <foreach collection="array" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

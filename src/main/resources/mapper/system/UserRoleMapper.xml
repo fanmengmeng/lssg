@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lssg.dao.sys.UserRoleMapper">
+  <resultMap id="BaseResultMap" type="com.lssg.model.sys.UserRole">
+
+    <result column="userid" jdbcType="INTEGER" property="userid" />
+    <result column="roleid" jdbcType="INTEGER" property="roleid" />
+  </resultMap>
+
+
+  <delete id="deleteUserRolesByUserId" parameterType="java.lang.Integer">
+    DELETE FROM  t_user_role  WHERE userid IN
+    <foreach collection="array" item="id" open="(" separator="," close=")">
+      #{id}
+    </foreach>
+  </delete>
+
+</mapper>

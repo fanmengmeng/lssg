@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lssg.dao.sys.DictMapper">
+  <resultMap id="BaseResultMap" type="com.lssg.model.sys.Dict">
+
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="key" jdbcType="VARCHAR" property="key" />
+    <result column="value" jdbcType="VARCHAR" property="value" />
+    <result column="fieledname" jdbcType="VARCHAR" property="fieledname" />
+    <result column="tablename" jdbcType="VARCHAR" property="tablename" />
+  </resultMap>
+</mapper>

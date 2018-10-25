@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lssg.dao.sys.UserMapper">
+    <resultMap id="BaseResultMap" type="com.lssg.model.sys.User">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="username" jdbcType="VARCHAR" property="username"/>
+        <result column="password" jdbcType="VARCHAR" property="password"/>
+        <result column="company" jdbcType="VARCHAR" property="company"/>
+        <result column="email" jdbcType="VARCHAR" property="email"/>
+        <result column="mobile" jdbcType="VARCHAR" property="mobile"/>
+        <result column="wechat" jdbcType="VARCHAR" property="wechat"/>
+        <result column="status" jdbcType="CHAR" property="status"/>
+        <result column="createtime" jdbcType="TIMESTAMP" property="createtime"/>
+        <result column="updatetime" jdbcType="TIMESTAMP" property="updatetime"/>
+        <result column="lastlogintime" jdbcType="TIMESTAMP" property="lastlogintime"/>
+        <result column="ssex" jdbcType="CHAR" property="ssex"/>
+        <result column="theme" jdbcType="VARCHAR" property="theme"/>
+        <result column="avatar" jdbcType="VARCHAR" property="avatar"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+    </resultMap>
+
+    <!--获取总条数-->
+    <select id="userTotal" resultType="java.lang.Integer">
+        SELECT count(*) from t_user
+    </select>
+
+    <select id="getUserAll" resultType="com.lssg.model.sys.User">
+        select * from t_user u
+        <if test="username != null and username != ''">
+            AND u.username = #{username}
+        </if>
+        <if test="status != null and status != ''">
+            AND u.status = #{status}
+        </if>
+        order by u.id
+    </select>
+
+
+    <select id="findUserWithRole" resultType="userWithRole">
+        select
+            u.id  id,
+            u.username,
+            u.email,
+            u.mobile,
+            u.status,
+            u.ssex,
+            ur.roleid roleid
+        from t_user u
+            left join t_user_role ur on (u.id = ur.userid)
+        where u.id = #{userId}
+    </select>
+
+    <select id="findUserProfile" resultType="user" parameterType="user">
+        SELECT
+            U.username,
+            U.id                    userid,
+            U.mobile,
+            U.email,
+            U.avatar,
+            U.remark,
+            U.ssex,
+            group_concat(r.rolename) AS roleName
+        FROM
+            t_user U
+            LEFT JOIN t_user_role ur ON U.id = ur.userid
+            LEFT JOIN t_role r ON r.id = ur.roleid
+        WHERE
+            U.id = #{userId}
+        GROUP BY
+            U.username,
+            U.mobile,
+            U.email,
+            U.avatar,
+            U.remark,
+            U.ssex,
+            U.id
+    </select>
+
+    <insert id="insertUser" parameterType="com.lssg.model.sys.User">
+
+        <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into t_user (username, password,company,email,mobile,wechat,status,lastlogintime,ssex,
+        theme,avatar,remark,createuser, createtime)
+        values
+        (#{username,jdbcType=VARCHAR},
+        #{password,jdbcType=VARCHAR},
+        #{company,jdbcType=VARCHAR},
+        #{email,jdbcType=VARCHAR},
+        #{mobile,jdbcType=VARCHAR},
+        #{wechat,jdbcType=VARCHAR},
+        #{status,jdbcType=VARCHAR},
+        #{lastlogintime,jdbcType=VARCHAR},
+        #{ssex,jdbcType=VARCHAR},
+        #{theme,jdbcType=VARCHAR},
+        #{avatar,jdbcType=VARCHAR},
+        #{remark,jdbcType=VARCHAR},
+        #{createuser,jdbcType=VARCHAR},
+        #{createtime,jdbcType=TIMESTAMP})
+    </insert>
+
+    <!--批量删除用户-->
+    <delete id="batchDeleteUser" parameterType="java.lang.Integer">
+        DELETE FROM  t_user  WHERE id IN
+        <foreach collection="array" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

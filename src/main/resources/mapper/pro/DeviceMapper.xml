@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lssg.dao.pro.DeviceMapper">
+
+    <select id="getDeviceCount" resultType="java.lang.Integer">
+        SELECT COUNT(*)
+        FROM
+            p_device
+    </select>
+    <select id="selectDeviceByPage" resultType="com.lssg.model.pro.Device">
+        SELECT *
+        FROM
+            p_device
+
+    </select>
+
+    <!-- 分类查询工地所属摄像头 -->
+    <select id="selectDeviceSort" resultType="com.lssg.model.pro.Device"
+            parameterType="java.util.List">
+        SELECT *
+        FROM p_device d
+        left join p_project_device pd on d.id=pd.deviceid
+        left join p_project i on i.id=pd.projectid
+        where i.projectname in
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+
+</mapper>

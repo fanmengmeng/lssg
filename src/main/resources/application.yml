@@ -1,0 +1,55 @@
+server:
+  port: 8080
+  tomcat:
+      uri-encoding: utf-8
+  servlet:
+    context-path: /
+
+spring:
+  profiles:
+    active: dev
+  mvc:
+    static-path-pattern: /static/**
+    view:
+      prefix: /WEB-INF/jsp/
+      suffix: .jsp
+  jackson:
+    time-zone: GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss
+  redis:
+    # Redis数据库索引（默认为0）
+    database: 0
+    # Redis服务器地址
+    host: 127.0.0.1
+    # Redis服务器连接端口
+    port: 6379
+    # Redis 密码
+    password:
+
+
+mybatis:
+  # type-aliases扫描路径
+  type-aliases-package: com.lssg.model
+  # mapper xml实现扫描路径
+  mapper-locations: classpath:mapper/*/*.xml
+
+#mappers 多个接口时逗号隔开
+mapper:
+  mappers: com.lssg.common.config.MyMapper
+  not-empty: false
+  identity: MYSQL
+
+#pagehelper
+pagehelper:
+  helperDialect: mysql
+  reasonable: true
+  supportMethodsArguments: true
+  params: count=countSql
+
+logging:
+  level:
+    com:
+      lssg:
+        system:
+          dao: debug
+

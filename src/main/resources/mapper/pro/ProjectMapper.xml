@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.lssg.dao.pro.ProjectMapper">
+    <!-- resultMap:映射实体类和字段之间的一一对应的关系 -->
+    <resultMap id="projectDeviceMap" type="Project">
+        <id property="id" column="id" />
+        <result property="projectname" column="projectname" />
+        <!-- 多对多关联映射：collection -->
+        <collection property="devices" ofType="Device">
+            <id property="id" column="c_id" />
+            <result property="deviceserial" column="deviceserial" />
+        </collection>
+    </resultMap>
+
+    <!--获取总条数-->
+    <select id="infoTotal" resultType="java.lang.Integer">
+        SELECT count(*) from p_project
+    </select>
+
+    <!--获取所有的字段-->
+    <select id="getProjectAndDevice" resultMap="projectDeviceMap">
+        select
+            p.*,d.* from
+            p_project p,p_device d,p_project_device ppd
+        where p.id=ppd.projectid
+              and d.id=ppd.deviceid
+
+    </select>
+
+    <!-- 查询表中name的所有行 -->
+    <select id="getProject"
+            resultType="com.lssg.model.pro.Project">
+       select * from p_project;
+    </select>
+
+</mapper>
+
